@@ -19,7 +19,7 @@ releases of python.
     print(response.content)
 
 """
-from concurrent.futures import ThreadPoolExecutor, ProcessPoolExecutor
+from concurrent.futures import Future, ThreadPoolExecutor, ProcessPoolExecutor
 from functools import partial
 from pickle import dumps, PickleError
 
@@ -67,7 +67,28 @@ class FuturesSession(Session):
         self.executor = executor
         self.session = session
 
-    def send(self, request, **kwargs):
+    def prepare_request(self, request):
+        if self.session:
+            return self.session.prepare_request(request)
+        return super(FuturesSession, self).prepare_request(request)
+
+    def merge_environment_settings(self, *args):
+        if self.session:
+            return self.session.merge_environment_settings(*args)
+        return super(FuturesSession, self).merge_environment_settings(*args)
+
+    def resolve_redirects(self, resp, req, **kwargs):
+        _super = super(FuturesSession, self)
+        if isinstance(resp, Future):
+            return _super.resolve_redirects(resp.result(), req, **kwargs)
+        else:
+            kwargs['_async'] = False
+            return _super.resolve_redirects(resp, req, **kwargs)
+
+    def send(self, request, _async=True, **kwargs):
+        if not _async:
+            return super(FuturesSession, self).send(request, **kwargs)
+
         if self.session:
             func = self.session.send
         else:
