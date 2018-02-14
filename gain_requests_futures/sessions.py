@@ -19,18 +19,17 @@ releases of python.
     print(response.content)
 
 """
-from concurrent.futures import Future, ThreadPoolExecutor, ProcessPoolExecutor
+from concurrent.futures import Future, ThreadPoolExecutor
+try:
+    from concurrent.futures import ProcessPoolExecutor
+except ImportError:
+    pass
+
 from functools import partial
 from pickle import dumps, PickleError
 
 from requests import Session
 from requests.adapters import DEFAULT_POOLSIZE, HTTPAdapter
-
-
-def wrap(self, sup, background_callback, *args_, **kwargs_):
-    """ A global top-level is required for ProcessPoolExecutor """
-    resp = sup(*args_, **kwargs_)
-    return background_callback(self, resp) or resp
 
 
 PICKLE_ERROR = (
@@ -94,7 +93,8 @@ class FuturesSession(Session):
         else:
             func = partial(Session.send, self)
 
-        if isinstance(self.executor, ProcessPoolExecutor):
+        if not isinstance(self.executor, ThreadPoolExecutor) and \
+                isinstance(self.executor, ProcessPoolExecutor):
             try:
                 dumps(func)
             except (TypeError, PickleError):
