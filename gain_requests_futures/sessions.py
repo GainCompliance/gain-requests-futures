@@ -1,13 +1,13 @@
 # -*- coding: utf-8 -*-
 """
-requests_futures
+gain_requests_futures
 ~~~~~~~~~~~~~~~~
 
 This module provides a small add-on for the requests http library. It makes use
 of python 3.3's concurrent.futures or the futures backport for previous
 releases of python.
 
-    from requests_futures import FuturesSession
+    from gain_requests_futures import FuturesSession
 
     session = FuturesSession()
     # request is run in the background
@@ -33,8 +33,10 @@ def wrap(self, sup, background_callback, *args_, **kwargs_):
     return background_callback(self, resp) or resp
 
 
-PICKLE_ERROR = ('Cannot pickle function. Refer to documentation: https://'
-                'github.com/ross/requests-futures/#using-processpoolexecutor')
+PICKLE_ERROR = (
+    'Cannot pickle function. Refer to documentation: https://github.com/'
+    'GainCompliance/gain-requests-futures/#using-processpoolexecutor'
+)
 
 
 class FuturesSession(Session):
