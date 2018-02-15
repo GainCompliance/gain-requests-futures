@@ -14,7 +14,7 @@ import logging
 __title__ = 'requests-futures'
 __version__ = '0.9.7'
 __build__ = 0x000000
-__author__ = 'Ross McFarland'
+__author__ = 'Ross McFarland, David An'
 __license__ = 'Apache 2.0'
 __copyright__ = 'Copyright 2013 Ross McFarland'
 

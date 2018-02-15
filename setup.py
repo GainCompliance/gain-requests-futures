@@ -3,7 +3,7 @@
 import os
 import sys
 
-import requests_futures
+import gain_requests_futures
 
 try:
     from setuptools import setup
@@ -15,7 +15,7 @@ if sys.argv[-1] == 'publish':
     sys.exit()
 
 packages = [
-    'requests_futures',
+    'gain_requests_futures',
 ]
 
 requires = [
@@ -26,19 +26,19 @@ if sys.version_info < (3, 2):
     requires.append('futures>=2.1.3')
 
 setup(
-    name='requests-futures',
-    version=requests_futures.__version__,
+    name='gain-requests-futures',
+    version=gain_requests_futures.__version__,
     description='Asynchronous Python HTTP for Humans.',
     long_description=open('README.rst').read(),
     author='Ross McFarland',
     author_email='rwmcfa1@neces.com',
     packages=packages,
-    package_dir={'requests_futures': 'requests_futures'},
-    package_data={'requests_futures': ['LICENSE', 'README.rst']},
+    package_dir={'gain_requests_futures': 'gain_requests_futures'},
+    package_data={'gain_requests_futures': ['LICENSE', 'README.rst']},
     include_package_data=True,
     install_requires=requires,
     license='Apache License v2',
-    url='https://github.com/ross/requests-futures',
+    url='https://github.com/GainCompliance/gain-requests-futures',
     zip_safe=False,
     classifiers=(
         'Development Status :: 5 - Production/Stable',

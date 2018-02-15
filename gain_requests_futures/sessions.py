@@ -1,13 +1,13 @@
 # -*- coding: utf-8 -*-
 """
-requests_futures
+gain_requests_futures
 ~~~~~~~~~~~~~~~~
 
 This module provides a small add-on for the requests http library. It makes use
 of python 3.3's concurrent.futures or the futures backport for previous
 releases of python.
 
-    from requests_futures import FuturesSession
+    from gain_requests_futures import FuturesSession
 
     session = FuturesSession()
     # request is run in the background
@@ -19,7 +19,7 @@ releases of python.
     print(response.content)
 
 """
-from concurrent.futures import ThreadPoolExecutor
+from concurrent.futures import Future, ThreadPoolExecutor
 try:
     from concurrent.futures import ProcessPoolExecutor
 except ImportError:
@@ -32,14 +32,10 @@ from requests import Session
 from requests.adapters import DEFAULT_POOLSIZE, HTTPAdapter
 
 
-def wrap(self, sup, background_callback, *args_, **kwargs_):
-    """ A global top-level is required for ProcessPoolExecutor """
-    resp = sup(*args_, **kwargs_)
-    return background_callback(self, resp) or resp
-
-
-PICKLE_ERROR = ('Cannot pickle function. Refer to documentation: https://'
-                'github.com/ross/requests-futures/#using-processpoolexecutor')
+PICKLE_ERROR = (
+    'Cannot pickle function. Refer to documentation: https://github.com/'
+    'GainCompliance/gain-requests-futures/#using-processpoolexecutor'
+)
 
 
 class FuturesSession(Session):
@@ -70,7 +66,28 @@ class FuturesSession(Session):
         self.executor = executor
         self.session = session
 
-    def send(self, request, **kwargs):
+    def prepare_request(self, request):
+        if self.session:
+            return self.session.prepare_request(request)
+        return super(FuturesSession, self).prepare_request(request)
+
+    def merge_environment_settings(self, *args):
+        if self.session:
+            return self.session.merge_environment_settings(*args)
+        return super(FuturesSession, self).merge_environment_settings(*args)
+
+    def resolve_redirects(self, resp, req, **kwargs):
+        _super = super(FuturesSession, self)
+        if isinstance(resp, Future):
+            return _super.resolve_redirects(resp.result(), req, **kwargs)
+        else:
+            kwargs['_async'] = False
+            return _super.resolve_redirects(resp, req, **kwargs)
+
+    def send(self, request, _async=True, **kwargs):
+        if not _async:
+            return super(FuturesSession, self).send(request, **kwargs)
+
         if self.session:
             func = self.session.send
         else:
