@@ -1,12 +1,24 @@
 language: python
 python:
-  - 2.7
-  - 3.3
-  - 3.4
-  - 3.5
-env: HTTPBIN_URL=http://httpbin.org/
+- 2.7
+- 3.3
+- 3.4
+- 3.5
+env:
+  matrix:
+  - HTTPBIN_URL=http://httpbin.org/
+  global:
+  - secure: L+EOX+67cMghG2rYBliO3P1vs1Mir7+GJTyUXd7JLdW1SvJm3B7LAfAmDYbM67MrjEUknCzRYEYutKj14HKLpHRpu+Cr40sn3ZdUXmfpJUU9dVz20Uljg40HSPHEm/hTfz/kzh5xDdnOSu2TnLMpqOyW6tqTlfmpNt8StYdEab8rKPHvoEQwz1W/FJDzvLj91WP/g33OxZYtmOsQ7ii/0G5q0TKqYuYeZdG+ZuJ5VnvO6/dvhmNhMcm5uLsARTXPeUd2Vf354dLGZSWtitl5kM6TORdHdsewIYfSbWR7+NVPdC2elhbFs9GgLzqONkfC7KTijZ/ZK8CKNI+Yi/Cd23IZrQWY9ffxdiwvWfqFk5gHFWdgrXUhUo7GBB0viPG1hUaFMyNUdHTuBXZuDpp75WXjqLd0i0Khvl9miAd4aI6O5K4+AUO3XI9JnE3bmr72aRnabIM10mQqWG0XBp5cDg0HaEXcH+GEb4ytYtqZ6bKh9T2MpFmxIhEoQWrQdtLzhEbkEcVeIanh+iJDrg4S9tka24tjXZvbEsMCw6rb+JO2BvkQWHsWKjJSJptFhOOeM/TEBuU0v9+Irw3z+x1pSdYms9YmQ8kZUbrLe9bXRuFsGiEBs7osRne/nGjOIJn3FuTlPSUeT7Jn3dZawf1wetN9zJG+nAZFuaI2wnxfrSs=
+  - secure: LZDQAKmRL2fLxMNJQVSMCLjJmF6CloCFHcNNp0XzhJeZP6omI2Mxt8kOANfdtxHnBSwTIQLgCnwVCDhgqfmbljgCkjE580zFkv/+ss12OJs4YCM8Yp1ANziF2eb56TkwhbNYoG7h8GfLIEcPorBjt8Kn5QutiIAg7U9WyxkwyGuOH46a8cDWM7qMgfTlXlLeAZQGgvLIC5VK/mpOL5t/XgYNIUGozF+JIJg7TBxvOqxy5uTFZKBdSgJWxoVnGojuaFUPCXw0jvfoN8cYV12jsQ2bKdhIMxYiyQM+OF8354rO1VDLXGApRTqaiu6IVY7rrJyDRQAfvOwKTaLMMRQ/lzxjibN4DJVJhnUC7V3zJDqC+2lLbjf2RWiz6HWPewRo+gdAWetHz4pjVvaRkEkouCVOc4khu3A19+kM3Hn7WVniTSB7abSAbKVcY4ExGk25HDFOMAsGALhsVllsWL+aVXr1C1hJ3VR4hUWkDsesto73bSQgf5VFFIEMIEWTBRmI1XmxBOiw+QL+AwAuTVSu09P0CwU5edZfjj62BrDrLWCem0aLZ3iF5fMq/2XPTaszju4Lj2s9yTUpqqiOcCHMjBGCmqg8s6Uqis6yy6QGI1XPw1WNMf06BAuD7bonxCOOI3L+YbaHZs0opGBaQmZn78eepEiueyLUDzU9b/GdSoM=
 script: python test_requests_futures.py
 install: pip install -r requirements-python-2.7.txt
 notifications:
-  email:
-    - rwmcfa1@neces.com
+  email: false
+deploy:
+  provider: pypi
+  user: "${PYPI_USERNAME}"
+  password: "${PYPI_PASSWORD}"
+  distributions: sdist bdist_wheel
+  on:
+    tags: true
+    condition: "$TRAVIS_TAG =~ ^v[0-9]+\\.[0-9]+\\.[0-9]+$"
