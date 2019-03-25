@@ -76,9 +76,9 @@ class RequestsTestCase(TestCase):
         """ Tests the `max_workers` shortcut. """
         from concurrent.futures import ThreadPoolExecutor
         session = FuturesSession()
-        self.assertEqual(session.executor._max_workers, 2)
-        session = FuturesSession(max_workers=5)
         self.assertEqual(session.executor._max_workers, 5)
+        session = FuturesSession(max_workers=2)
+        self.assertEqual(session.executor._max_workers, 2)
         session = FuturesSession(executor=ThreadPoolExecutor(max_workers=10))
         self.assertEqual(session.executor._max_workers, 10)
         session = FuturesSession(executor=ThreadPoolExecutor(max_workers=10),

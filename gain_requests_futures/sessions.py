@@ -40,7 +40,7 @@ PICKLE_ERROR = (
 
 class FuturesSession(Session):
 
-    def __init__(self, executor=None, max_workers=2, session=None, *args,
+    def __init__(self, executor=None, max_workers=5, session=None, *args,
                  **kwargs):
         """Creates a FuturesSession
 
